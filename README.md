@@ -1,6 +1,6 @@
 # completion-tracker
 
-## Descriptiomn
+## Description
 
 ## Usage
 
