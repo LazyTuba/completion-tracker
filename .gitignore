@@ -1,0 +1,8 @@
+# backups files
+*~
+*.org
+*.log
+
+npm-modules/*
+
+# END
