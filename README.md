@@ -31,15 +31,17 @@ Require the module.
     var CompletionTracker = require('completion-tracker');
 
 
-### Configure for tracking 'posts' to a defined/labeled set of tags
+### Define specification for tracking 'posts' to a defined/labeled set of tags
 
-Track three (3) tasks with array of tag names ('a', 'b', 'c' for
-simplicty).  Simple shorthand when trackType for all tasks is 'hold'.
+Let's assume we want to be notified when (3) three tasks - 'a', 'b', and 'c'
+ - have completed.  Since trackType is 'hold' by default so we
+can use a simple shorthand:
 
     tagSpecs = ['a', 'b', 'c'];
 
-Equivalently, use array of objects.  Must include 'tag' property. Opts
-property not used for 'hold' tracking and so is ignored, if present;
+Or, equivalently, use array of objects.  We must include 'tag'
+property. Opts property is not used for 'hold' tracking and so is
+ignored, if present;
 
     tagSpecs = [
         { tag : 'a', trackType : 'hold', opts : {} },
@@ -47,32 +49,32 @@ property not used for 'hold' tracking and so is ignored, if present;
         { tag : 'c', trackType : 'hold', opts : {} }
     ];
 
-Or as object of objects.
+Or as dictionary of objects.
 
     tagSpecs = {
         a : { trackType : 'hold', opts : {} },
         b : { trackType : 'hold', opts : {} }
         c : { trackType : 'hold', opts : {} }
-    ];
+    };
 
-A 'complete' event will be emitted when when every tag has registered
-at least one post.
+The tracker will emit a 'complete' event when at least one post has
+been registered for every tag.
 
-### Configure for counting completion of labeled group(s) of tasks. 
+### Configure for tracking completion of labeled group(s) of tasks. 
 
 If tracking with a 'count' trackType, must include 'opts' property with 'reqd' property.
 
-    tagSpecs = [
+    tagSpecs = {
             a : { trackType : 'count', opts : {reqd : 3 } },
-            b : { trackType : 'count', opts : {reqd : 5 } }
+            b : { trackType : 'count', opts : {reqd : 5 } },
             c : { trackType : 'count', opts : {reqd : 20} }
-        ];
+        };
 
 
 A 'complete' event will be emitted when the number of posts required
-for each tag has been registered.
+for each tag (specified by the 'reqd' argument) has been registered.
 
-### Instantiate and subscribe to desired events.
+### Instantiate tracker and subscribe to desired events.
 
     var trackster = new CompletionTracker(tagSpecs);
 
@@ -93,16 +95,17 @@ for each tag has been registered.
 
 Post call takes three arguments:
 
-    trackster.port(<tag>, <thing> [, <action> ] )
+    trackster.post(<tag>, <thing> [, <action> ] )
 
 The first argument (tag) is the name of the tag to which we are
 posting.  The second argument (thing) is an arbitrary value which will
 be 'held' if the trackType is 'hold'.  The third argument (action) is
 optional.  If present, should be a valid trackType.  It can be
-used to override the trackType specified or that tag during
-instazntiation.
+used to override the trackType specified for that tag during
+instantiation.
 
-For example:
+For example, the following loops will complete the task sets specified
+by tagSpecs.
 
     for (i = 0; i < 3;  i++) {trackster.post('a', "This is A number " + i )};
     for (i = 0; i < 5;  i++) {trackster.post('b', "This is B number " + i )};
