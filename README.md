@@ -11,12 +11,11 @@ hence the name.  For each tag, two (2) types of tracking (trackTypes)
 are supported - "hold" and "count" - which are specified as part of
 the configuration object passed during instantiation.
 
-If 'hold' is the trackType specified for a tag, posts to that tag are
-'held', meaning that the value of the 'thing' argument of the post
-call is held by the Tracker - i.e., assigned as the value of the
-'thing' property of the object assigned to that tag on the Tracker's
-'tags' object.  A 'hold' task is deemed 'complete' when a single post
-is registered.
+If 'hold' is the trackType specified for a tag, the 'thing' argument
+of post to that tag is held by the Tracker - i.e., assigned as the
+value of the 'thing' property of the object assigned to that tag on
+the Tracker's 'tags' object.  A 'hold' task is deemed 'complete' when
+a single post is registered.
 
 If 'count' is the trakType specified for a tag, posts to that tag are
 counted - i.e., the 'count' property of the object assigned to that
