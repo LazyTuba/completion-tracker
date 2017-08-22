@@ -2,12 +2,11 @@
 
 ## Description
 
-CompletionTracker is a publish-subscribe mechanism which tracks
-'posts' to a defined set of tags, emitting a 'post' event as each
-post is registered and a 'complete' event when the completion
-requirements for all tags have been satisfied.  The motivation for
-creating this class is to track completion of asynchronous tasks,
-hence the name.
+The completion-tracker is a publish-subscribe mechanism which tracks
+'posts' to a defined set of tags, emitting a 'post' event as each post
+is registered and a 'complete' event when the completion requirements
+for all tags have been satisfied.  The motivation for creating this
+class is to track completion of asynchronous tasks, hence the name.
 
 For each tag, two (2) types of tracking (trackTypes) are supported -
 "hold" and "count" - which are specified as part of the configuration
@@ -33,10 +32,14 @@ Require the module.
     var CompletionTracker = require('completion-tracker');
 
 
+### Instantiate tracker.
+
+    var trackster = new CompletionTracker(tagSpecs);
+
 ### Define specification for tracking 'posts' to a defined/labeled set of tags
 
-Let's assume we want to be notified when (3) three tasks - 'a', 'b', and 'c'
- - have completed.  Since trackType is 'hold' by default so we
+Let's assume we want to be notified when (3) three tasks - 'a', 'b',
+and 'c' - have completed.  Since trackType is 'hold' by default so we
 can use a simple shorthand:
 
     tagSpecs = ['a', 'b', 'c'];
