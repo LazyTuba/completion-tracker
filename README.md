@@ -7,9 +7,11 @@ CompletionTracker is a publish-subscribe mechanism which tracks
 post is registered and a 'complete' event when the completion
 requirements for all tags have been satisfied.  The motivation for
 creating this class is to track completion of asynchronous tasks,
-hence the name.  For each tag, two (2) types of tracking (trackTypes)
-are supported - "hold" and "count" - which are specified as part of
-the configuration object passed during instantiation.
+hence the name.
+
+For each tag, two (2) types of tracking (trackTypes) are supported -
+"hold" and "count" - which are specified as part of the configuration
+object passed during instantiation.
 
 If 'hold' is the trackType specified for a tag, the 'thing' argument
 of post to that tag is held by the Tracker - i.e., assigned as the
