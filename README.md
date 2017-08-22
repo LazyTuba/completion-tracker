@@ -36,9 +36,9 @@ Require the module.
 
     var trackster = new CompletionTracker(tagSpecs);
 
-### Define specification for tracking 'posts' to a defined/labeled set of tags
+#### Specification for tracking 'posts' to a defined/labeled set of tags
 
-Let's assume we want to be notified when (3) three tasks - 'a', 'b',
+Suppose we want to be notified when (3) three tasks - 'a', 'b',
 and 'c' - have completed.  Since trackType is 'hold' by default so we
 can use a simple shorthand:
 
@@ -65,9 +65,10 @@ Or as dictionary of objects.
 The tracker will emit a 'complete' event when at least one post has
 been registered for every tag.
 
-### Configure for tracking completion of labeled group(s) of tasks. 
+#### Specification for tracking completion of labeled group(s) of tasks. 
 
-If tracking with a 'count' trackType, must include 'opts' property with 'reqd' property.
+When tracking with a 'count' trackType, we must include 'opts'
+property with 'reqd' property.
 
     tagSpecs = {
             a : { trackType : 'count', opts : {reqd : 3 } },
