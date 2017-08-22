@@ -39,14 +39,14 @@ Require the module.
 #### Specification for tracking 'posts' to a defined/labeled set of tags
 
 Suppose we want to be notified when (3) three tasks - 'a', 'b',
-and 'c' - have completed.  Since trackType is 'hold' by default so we
-can use a simple shorthand:
+and 'c' - have completed.  Since trackType is 'hold' by default, we
+can use a shorthand specification:
 
     tagSpecs = ['a', 'b', 'c'];
 
-Or, equivalently, use array of objects.  We must include 'tag'
-property. Opts property is not used for 'hold' tracking and so is
-ignored, if present;
+Or, equivalently, use array of objects.  Each object must include
+'tag' property. The opts property is not used for 'hold' tracking and so
+is optional and ignored, if present;
 
     tagSpecs = [
         { tag : 'a', trackType : 'hold', opts : {} },
@@ -62,8 +62,8 @@ Or as dictionary of objects.
         c : { trackType : 'hold', opts : {} }
     };
 
-The tracker will emit a 'complete' event when at least one post has
-been registered for every tag.
+The completion-tracker will emit a 'complete' event when at least one
+post has been registered for every tag.
 
 #### Specification for tracking completion of labeled group(s) of tasks. 
 
@@ -80,9 +80,7 @@ property with 'reqd' property.
 A 'complete' event will be emitted when the number of posts required
 for each tag (specified by the 'reqd' argument) has been registered.
 
-### Instantiate tracker and subscribe to desired events.
-
-    var trackster = new CompletionTracker(tagSpecs);
+### Subscribe to desired events.
 
     trackster.on('post', function onPost(ev) {
         console.log('Post: %s', ev);
@@ -110,8 +108,9 @@ optional.  If present, should be a valid trackType.  It can be
 used to override the trackType specified for that tag during
 instantiation.
 
-For example, the following loops will complete the task sets specified
-by tagSpecs.
+For example, the following loops will register the posts needed to
+meet the 'complete' requirements of the three tag sets specified by
+tagSpecs.
 
     for (i = 0; i < 3;  i++) {trackster.post('a', "This is A number " + i )};
     for (i = 0; i < 5;  i++) {trackster.post('b', "This is B number " + i )};
