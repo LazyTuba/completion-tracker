@@ -1,6 +1,6 @@
 {
   "name": "completion-tracker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Track completion of async tasks and task sets",
   "main": "completion-tracker.js",
   "scripts": {
@@ -11,6 +11,6 @@
     "url": "git+https://github.com/LazyTuba/completion-tracker.git"
   },
   "keywords": [],
-  "author": "Lazy Tuba <LazyTuba@att.net>" ,
+  "author": "Lazy Tuba <LazyTuba@att.net>",
   "license": "ISC"
 }
