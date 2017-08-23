@@ -2,6 +2,8 @@
 
 ## Description
 
+Track completion of async tasks and task sets
+
 The completion-tracker is a publish-subscribe mechanism which tracks
 'posts' to a defined set of tags, emitting a 'post' event as each post
 is registered and a 'complete' event when the completion requirements
