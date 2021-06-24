@@ -69,6 +69,10 @@ post has been registered for every tag.
 
 #### Specification for tracking completion of labeled group(s) of tasks. 
 
+The 'count' trackType can be used when one wants to count the posts
+made to one or more tags and be notified when every tag has received
+its required number of posts.
+
 When tracking with a 'count' trackType, we must include 'opts'
 property with 'reqd' property.
 
@@ -82,14 +86,36 @@ property with 'reqd' property.
 A 'complete' event will be emitted when the number of posts required
 for each tag (specified by the 'reqd' argument) has been registered.
 
+#### Specification for collecting results of labeled group(s) of tasks. 
+
+The 'coll' (collect) trackType is similar to the 'count' trackType
+with the additional feature that it 'collects' the posted objects as an
+array that can be retrieved upon completion.
+
+Like the 'count' trackType, when tracking with a 'coll' trackType, we
+must include 'opts' property with 'reqd' property.
+
+    tagSpecs = {
+            a : { trackType : 'coll', opts : {reqd : 3 } },
+            b : { trackType : 'coll', opts : {reqd : 5 } },
+            c : { trackType : 'coll', opts : {reqd : 20} }
+        };
+
+
+A 'complete' event will be emitted when the number of posts required
+for each tag (specified by the 'reqd' argument) has been registered.
+
 ### Subscribe to desired events.
 
-    trackster.on('post', function onPost(ev) {
-        console.log('Post: %s', ev);
+The handler function specified for 'post' events will be called with
+two (2) arguments - the tag, and a generic message.
+    
+    trackster.on('post', function onPost(tag, msg) {
+        console.log('Tag %s posted: %s', tag, msg);
     })
 
-    trackster.on('invalidTag', function onInvalidTag(ev) {
-        console.log('Ignored attempt to post thing for invalid tag %s', ev);
+    trackster.on('invalidTag', function onInvalidTag(tag) {
+        console.log('Ignored attempt to post thing for invalid tag %s', tag);
     })
 
     trackster.on('complete', function onComplete(ev) {
@@ -105,7 +131,8 @@ Post call takes three arguments:
 
 The first argument (tag) is the name of the tag to which we are
 posting.  The second argument (thing) is an arbitrary value which will
-be 'held' if the trackType is 'hold'.  The third argument (action) is
+be 'held' if the trackType is 'hold', 'collected' (in array) if
+trackType is 'coll'.  The third argument (action) is
 optional.  If present, should be a valid trackType.  It can be
 used to override the trackType specified for that tag during
 instantiation.
@@ -120,7 +147,10 @@ tagSpecs.
 
 ### Query the Completion Tracker
 
-    trackster.thing(<tag>) // returns the thing, if any, stored for the specified tag.
+    trackster.thing(<tag>)    // returns the thing, if any, stored for the specified tag.
 
-    trackster.count(<tag>) // returns the count, if any, stored for the specified tag.
+    trackster.things(<tag>)   // returns the array of whatever has been
+                              // 'held' or 'collected' for the specified tag.
+
+    trackster.count(<tag>)    // returns the count, if any, stored for the specified tag.
 

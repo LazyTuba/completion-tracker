@@ -1,4 +1,6 @@
-var ConnectionTracker = require('../connection-tracker');
+#! /usr/bin/env node
+
+var ConnectionTracker = require('../completion-tracker');
 
 var tracker = new ConnectionTracker('tbl1', 'tbl2', 'tbl33', 'tbl4');
 
