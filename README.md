@@ -10,22 +10,29 @@ is registered and a 'complete' event when the completion requirements
 for all tags have been satisfied.  The motivation for creating this
 class is to track completion of asynchronous tasks, hence the name.
 
-For each tag, two (2) types of tracking (trackTypes) are supported -
-"hold" and "count" - which are specified as part of the configuration
-object passed during instantiation.
+For each tag, three (3) types of tracking (trackTypes) are supported -
+"hold", "coll" and "count" - which are specified as part of the
+configuration object passed during instantiation.
 
 If 'hold' is the trackType specified for a tag, the 'thing' argument
 of post to that tag is held by the Tracker - i.e., assigned as the
-value of the 'thing' property of the object assigned to that tag on
-the Tracker's 'tags' object.  A 'hold' task is deemed 'complete' when
-a single post is registered.
+first element of the 'things' array (things[0]) of the object assigned
+to that tag on the Tracker's 'tags' object.  A 'hold' task is deemed
+'complete' when a single post is registered.
 
-If 'count' is the trakType specified for a tag, posts to that tag are
-counted - i.e., the 'count' property of the object assigned to that
-tag on the Tracker's 'tags' object is incremented (and the 'thing'
-argument of the post call is ignored).  A 'count' task is deemed
-complete when the count reaches the value of the 'reqd' option
-specifed during instantiation.
+If 'count' is the trackType specified for a tag, posts to that tag are
+not saved but simply counted - i.e., the 'count' property of the object
+assigned to that tag on the Tracker's 'tags' object is incremented
+(and the 'thing' argument of the post call is ignored).  A 'count'
+task is deemed complete when the count reaches the value of the 'reqd'
+option specifed during instantiation.
+
+If 'coll' is the trackType specified for a tag, posts to that tag are
+collected (pushed onto things array) and counted - i.e., the 'count'
+property of the object assigned to that tag on the Tracker's 'tags'
+object is incremented (and the 'thing' argument of the post call is
+ignored).  A 'coll' task is deemed complete when the count reaches the
+value of the 'reqd' option specifed during instantiation.
 
 ## Usage
 
