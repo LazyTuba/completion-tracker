@@ -1,6 +1,6 @@
 {
   "name": "completion-tracker",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Track completion of async tasks and task sets",
   "main": "completion-tracker.js",
   "scripts": {
