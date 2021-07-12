@@ -136,7 +136,7 @@ CompletionTracker.prototype.tagsAreSatisfied = function tagsAreSatisfied() {
     for (let tag in this.tagSpecs) {
 	let spec = this.tagSpecs[tag];
 	let trackType = spec.trackType;
-	console.log(`Checking status - tag: ${tag} / trackType: ${trackType}`)
+	// console.log(`Checking status - tag: ${tag} / trackType: ${trackType}`)
 	// console.log(`tagsAreSatisfied trackType: ${trackType}`)
 
 	if (trackType === 'hold') {

@@ -5,7 +5,7 @@
 Track completion of async tasks and task sets
 
 The completion-tracker is a publish-subscribe mechanism which tracks
-'posts' to a defined set of tags, emitting a 'post' event as each post
+'posts' to a defined set of tags (aka 'tasks'), emitting a 'post' event as each post
 is registered and a 'complete' event when the completion requirements
 for all tags have been satisfied.  The motivation for creating this
 class is to track completion of asynchronous tasks, hence the name.
@@ -14,25 +14,25 @@ For each tag, three (3) types of tracking (trackTypes) are supported -
 "hold", "coll" and "count" - which are specified as part of the
 configuration object passed during instantiation.
 
-If 'hold' is the trackType specified for a tag, the 'thing' argument
+If the trackType specified for a tag is 'hold', the 'thing' argument
 of post to that tag is held by the Tracker - i.e., assigned as the
 first element of the 'things' array (things[0]) of the object assigned
 to that tag on the Tracker's 'tags' object.  A 'hold' task is deemed
 'complete' when a single post is registered.
 
-If 'count' is the trackType specified for a tag, posts to that tag are
+If the trackType specified for a tag is 'count', posts to that tag are
 not saved but simply counted - i.e., the 'count' property of the object
 assigned to that tag on the Tracker's 'tags' object is incremented
 (and the 'thing' argument of the post call is ignored).  A 'count'
 task is deemed complete when the count reaches the value of the 'reqd'
 option specifed during instantiation.
 
-If 'coll' is the trackType specified for a tag, posts to that tag are
-collected (pushed onto things array) and counted - i.e., the 'count'
-property of the object assigned to that tag on the Tracker's 'tags'
-object is incremented (and the 'thing' argument of the post call is
-ignored).  A 'coll' task is deemed complete when the count reaches the
-value of the 'reqd' option specifed during instantiation.
+If the trackType specified for a tag is 'coll', the values of the
+'thing' property of posts to that tag are collected (pushed onto
+'things' array) and counted - i.e., the 'count' property of the object
+assigned to that tag on the Tracker's 'tags' object is incremented.  A
+'coll' task is deemed complete when the count reaches the value of the
+'reqd' option specifed during instantiation.
 
 ## Usage
 
@@ -41,11 +41,8 @@ Require the module.
     var CompletionTracker = require('completion-tracker');
 
 
-### Instantiate tracker.
-
-    var trackster = new CompletionTracker(tagSpecs);
-
 #### Specification for tracking 'posts' to a defined/labeled set of tags
+
 
 Suppose we want to be notified when (3) three tasks - 'a', 'b',
 and 'c' - have completed.  Since trackType is 'hold' by default, we
@@ -74,7 +71,7 @@ Or as dictionary of objects.
 The completion-tracker will emit a 'complete' event when at least one
 post has been registered for every tag.
 
-#### Specification for tracking completion of labeled group(s) of tasks. 
+#### Specification for tracking completion of labeled set(s) of tasks. 
 
 The 'count' trackType can be used when one wants to count the posts
 made to one or more tags and be notified when every tag has received
@@ -111,6 +108,12 @@ must include 'opts' property with 'reqd' property.
 
 A 'complete' event will be emitted when the number of posts required
 for each tag (specified by the 'reqd' argument) has been registered.
+
+The 'things' posted to each tag can be retrieved as discussed below.
+
+### Instantiate tracker.
+
+    var trackster = new CompletionTracker(tagSpecs);
 
 ### Subscribe to desired events.
 

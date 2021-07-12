@@ -29,6 +29,7 @@ trackster.on('complete', function onComplete(ev) {
 	console.log(`Tag: ${tag}`);
 	console.log(`We held ${trackster.postedTo(tag)[0]} for tag ${tag}`);
 	console.log(`We counted ${trackster.count(tag)} for tag ${tag}`);
+	console.log(`We collected ${JSON.stringify(trackster.things(tag), null, 2)} for tag ${tag}`);
     })
     process.exit(1)
 })
@@ -38,7 +39,7 @@ trackster.on('complete', function onComplete(ev) {
 // trackster.post('b', "Post to tag 'b'");
 
 
-for (i = 0; i < 3;  i++) {trackster.post('a', `This is post number ${i+1} to A` )};
-for (i = 0; i < 5;  i++) {trackster.post('b', `This is post number ${i+1} to B` )};
-for (i = 0; i < 7;  i++) {trackster.post('c', `This is post number ${i+1} to C` )};
+for (i = 0; i < 3;  i++) {trackster.post('a', `thing-A${i+1}` )};
+for (i = 0; i < 5;  i++) {trackster.post('b', `thing-B${i+1}` )};
+for (i = 0; i < 7;  i++) {trackster.post('c', `thing-C${i+1}` )};
 
