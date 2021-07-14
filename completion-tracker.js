@@ -52,21 +52,21 @@ function normalizeTagSpec(tag, spec) {
 // Constructor function for class
 function CompletionTracker(tagSpecs) {
     EventEmitter.call(this);
-    this.tagSpecs = {};  // will look like: { a : {trackType : 'hold'}
-    this.tags = {};    // will look like: { a : {thing : <thing>, count : <count> } }
+    this._tagSpecs = {};  // will look like: { a : {trackType : 'hold'}
+    this._tags = {};    // will look like: { a : {thing : <thing>, count : <count> } }
     this.complete = false;
 
     if (Array.isArray(tagSpecs)) {
 	tagSpecs.forEach(
 	    (spec) => {
 		if (typeof spec === 'string' && validTag(spec)) {
-		    this.tagSpecs[spec] = {tag : spec, trackType: 'hold', opts : {} };
-		    this.tags[spec] = {things : [], count : 0 }
+		    this._tagSpecs[spec] = {tag : spec, trackType: 'hold', opts : {} };
+		    this._tags[spec] = {things : [], count : 0 }
 		} else if (typeof spec === 'object') {
 		    var tag = spec.tag;
 		    if (validTag(tag)) {
-			this.tagSpecs[tag] = normalizeTagSpec(tag, spec)
-			this.tags[tag] = {things : [], count : 0 }
+			this._tagSpecs[tag] = normalizeTagSpec(tag, spec)
+			this._tags[tag] = {things : [], count : 0 }
 		    } else {
 			console.log('Invalid tag: %s', tag);
 		    }
@@ -81,9 +81,9 @@ function CompletionTracker(tagSpecs) {
 	    (tag) => {
 		var spec = tagSpecs[tag];
 		if (typeof spec === 'object') {
-		    this.tagSpecs[tag] = normalizeTagSpec(tag, spec)
-		    // this.tags[tag] = {thing : null, count : 0 }
-		    this.tags[tag] = {things : [], count : 0 }
+		    this._tagSpecs[tag] = normalizeTagSpec(tag, spec)
+		    // this._tags[tag] = {thing : null, count : 0 }
+		    this._tags[tag] = {things : [], count : 0 }
 		} else {
 		    console.log('Property %s of tagSpec object not an object', tag);
 		}
@@ -95,31 +95,40 @@ util.inherits(CompletionTracker, EventEmitter);
 
 // Post to the CompletionTracker for a particular tag
 CompletionTracker.prototype.post = function(tag, thing, action) {
-    var spec = this.tagSpecs[tag];
+    var spec = this._tagSpecs[tag];
     if (spec) {
 	var trackType = validTrackType(action) ? action : spec.trackType;  // enable tracktype override
 	if (trackType === 'hold') {
-	    this.tags[tag].things[0] = thing;
-	    this.emit('post', tag, "Held post to " + tag + " (" + thing.length + ")");
+	    this._tags[tag].things[0] = thing;
+	    this.emit('post', {
+		emitter : this,
+		tag : tag,
+		msg : "Held post to " + tag + " (" + thing.length + ")"});
 	} else if (trackType === 'count') {
-	    this.tags[tag].count++;
-	    this.emit('post', tag, "Counted ["
-		      + this.tags[tag].count
-		      + "] post(s) to " + tag + " ("
-		      + thing.length + ")");
+	    this._tags[tag].count++;
+ 	    this.emit('post', {
+		emitter: this,
+		tag : tag,
+		msg : "Counted ["
+		    + this._tags[tag].count
+		    + "] post(s) to " + tag + " ("
+		    + thing.length + ")"});
 	} else if (trackType === 'coll') {
-	    this.tags[tag].count++;
-	    this.tags[tag].things.push(thing);
-	    this.emit('post', tag, "Collected ["
-		      + this.tags[tag].count
-		      + "] post(s) to " + tag + " ("
-		      + thing.length + ")");
+	    this._tags[tag].count++;
+	    this._tags[tag].things.push(thing);
+	    this.emit('post', {
+		emitter : this,
+		tag : tag,
+		msg : "Collected ["
+		    + this._tags[tag].count
+		    + "] post(s) to " + tag + " ("
+		    + thing.length + ")"});
 	}
 	if (this.tagsAreSatisfied()) {
 	    this.setComplete();
 	}
     } else {
-	this.emit('invalidTag', tag, "(" + thing.length + ") " + tag);
+	this.emit('invalidTag', { emitter : this, tag : tag, msg : `Invalid tag ${tag} (Length: ${thing.length})`});
     }
 };
 
@@ -127,30 +136,30 @@ CompletionTracker.prototype.setComplete = function setComplete() {
     if (this.complete) {return;}
     else {
 	this.complete = true;
-	this.emit('complete', 'CompletionTracker has received all things');
+	this.emit('complete', {
+	    emitter : this,
+	    msg : 'CompletionTracker has received all things'});
     }
 }
 
 // Check if all sets have been collected
 CompletionTracker.prototype.tagsAreSatisfied = function tagsAreSatisfied() {
-    for (let tag in this.tagSpecs) {
-	let spec = this.tagSpecs[tag];
+    for (let tag in this._tagSpecs) {
+	let spec = this._tagSpecs[tag];
 	let trackType = spec.trackType;
-	// console.log(`Checking status - tag: ${tag} / trackType: ${trackType}`)
-	// console.log(`tagsAreSatisfied trackType: ${trackType}`)
 
 	if (trackType === 'hold') {
-	    if (this.tags[tag].things.length < 1) {
+	    if (this._tags[tag].things.length < 1) {
 		return false;
 	    }
 	} else if ( trackType === 'count' ) {
 	    var reqd = spec.opts.reqd;
-	    if (this.tags[tag].count < reqd ) {
+	    if (this._tags[tag].count < reqd ) {
 		return false;
 	    }
 	} else if ( trackType === 'coll' ) {
 	    var reqd = spec.opts.reqd;
-	    if (this.tags[tag].count < reqd ) {
+	    if (this._tags[tag].count < reqd ) {
 		return false;
 	    }
 	}
@@ -159,21 +168,21 @@ CompletionTracker.prototype.tagsAreSatisfied = function tagsAreSatisfied() {
 }
 
 // Returns the thing 'held' for particular tag (if any)
-CompletionTracker.prototype.postedTo = function(tag) {
-    if (tag in this.tags) {
-	let trackType = this.tagSpecs[tag].trackType;
+CompletionTracker.prototype.thing = function(tag) {
+    if (tag in this._tags) {
+	let trackType = this._tagSpecs[tag].trackType;
 	if (trackType === 'hold') {
-	    return [this.tags[tag].things[0] ];
-	} else { return this.tags[tag].things; }
+	    return [this._tags[tag].things[0] ];
+	} else { return this._tags[tag].things; }
     } else {
 	return null;
     }
 };
 
-// Returns the things 'collected' for particular tag (if any)
+// Returns the things 'held' or 'collected' for particular tag
 CompletionTracker.prototype.things = function(tag) {
-    if (tag in this.tags) {
-	return this.tags[tag].things;
+    if (tag in this._tags) {
+	return this._tags[tag].things;
     } else {
 	return null;
     }
@@ -181,11 +190,15 @@ CompletionTracker.prototype.things = function(tag) {
 
 // Returns the value of the counter for a particular tag
 CompletionTracker.prototype.count = function(tag) {
-    if (tag in this.tags) {
-	return this.tags[tag].count;
+    if (tag in this._tags) {
+	return this._tags[tag].count;
     } else {
 	return null;
     }
 };
+
+CompletionTracker.prototype.tags = function() {
+    return Object.keys(this._tags)
+}
 
 module.exports = CompletionTracker;
