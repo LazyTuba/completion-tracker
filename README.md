@@ -45,7 +45,8 @@ Require the module.
     var CompletionTracker = require('completion-tracker');
 
 
-#### Specification for tracking 'posts' to a defined/labeled set of tags
+### Tag Specification
+#### Tracking 'posts' to a defined/labeled set of tags
 
 Suppose a simple case where we just want to be notified when (3) three
 tasks - 'a', 'b', and 'c' - have completed.  This can be achieved
@@ -82,17 +83,18 @@ specified with a shorthand:
 
     tagSpecs = ['a', 'b', 'c'];
 
-For 'hold' trackType, the completion-tracker will emit a 'complete'
-event when at least one post has been registered for every tag.
+For 'hold' trackType, the 'reqd' option is implicitly 1 so the
+completion-tracker will emit a 'complete' event when at least one post
+has been registered for every tag.
 
-#### Specification for tracking completion of labeled set(s) of tasks. 
+#### Tracking completion of labeled set(s) of tasks. 
 
 The 'count' trackType is useful for a tag that's 'complete' when
 its associated task has been performed some number of times (greater
 than 1).
 
-As shown previously, when tracking with a 'count' trackType, we must include 'opts'
-object with 'reqd' property.
+As shown previously, when tracking with a 'count' trackType, we must
+include an 'opts' object with an integer 'reqd' property.
 
     tagSpecs = {
             a : { trackType : 'count', opts : {reqd : 3 } },
@@ -104,7 +106,7 @@ object with 'reqd' property.
 A 'complete' event will be emitted when the number of posts required
 for each tag (specified by the 'reqd' argument) has been registered.
 
-#### Specification for collecting results of labeled group(s) of tasks. 
+#### Collecting results of labeled group(s) of tasks. 
 
 The 'coll' (collect) trackType is similar to the 'count' trackType
 with the additional feature that it 'collects' the posted objects as an
@@ -125,9 +127,26 @@ for each tag (specified by the 'reqd' argument) has been registered.
 
 The 'things' posted to each tag can be retrieved as discussed below.
 
-### Instantiate tracker.
+### Initialize tracker.
 
-    var trackster = new CompletionTracker(tagSpecs);
+    var trackster = new CompletionTracker( [tagSpecs] );
+
+If the tag specification is set during instantiation via the
+(optional) first argument, the newly instantiated
+CompletionTracker will begin tracking immediately unless *false* is
+passed as the second argument.
+
+Tag specification can be augmented/overridden (or initialized if not
+specified during instantiation) with a call(s) to the setTagSpecs() method:
+
+    var trackster = new CompletionTracker();
+    trackster.setTagSpecs(tagSpecs [, true|false ] )
+    
+
+var trackster = new CompletionTracker(tagSpecs [, true | false] );
+    
+Note that if the boolean second argument is either unspecified
+(missing) or not equal to *false*, tracking is started.
 
 ### Subscribe to desired events.
 
